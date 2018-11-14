@@ -13,4 +13,9 @@ subroutine linsolve(N,A,B,X)
 
   call dgesv(N,1,tempA,N,ipiv,X,N,info)
 
+  if (info .gt. 0) then
+     write(*,*) 'ERROR: singular matrix - setting emission to zero'
+     X = 0.0
+  end if
+
 end subroutine linsolve

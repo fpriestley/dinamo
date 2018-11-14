@@ -1,4 +1,5 @@
-program main
+! DINAMO v1.01
+program dinamo
   use constants_mod
   use particle_mod
 
@@ -238,4 +239,4 @@ program main
   write(*,"('Finished dust stuff')") 
   write(*,"('Time: ',F8.2,' seconds')") endtime-starttime
 
-end program main
+end program dinamo
