@@ -1,0 +1,8 @@
+S             ! Silicate or carbon
+2.5           ! Grain density (g cm-3)
+pyrmg100.lnk  ! n-k data filename
+50            ! No. size bins
+5e-3 0.25     ! Min/max grain radius (um)
+3.5           ! Power law exponent
+1.0           ! Grain number density (cm-3)
+1.5e3         ! Sublimation temperature (K)
