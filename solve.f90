@@ -14,7 +14,7 @@ subroutine solveTdist(nEnthalpy,P,nTemp,H_a,T_H,Tmid,nWav,lambda,Q_a,Jrad,a_g,rh
   double precision :: Tgrid(0:nEnthalpy),Hgrid(0:nEnthalpy),Hmid(nEnthalpy)
   double precision :: A(nEnthalpy,nEnthalpy),B(nEnthalpy)
   double precision :: zetaE,zetaEH
-  integer :: j,i
+  integer :: j,i,info
 
   Tmin = 0.0d0
   Tmax = T_H(nTemp)
@@ -42,15 +42,20 @@ subroutine solveTdist(nEnthalpy,P,nTemp,H_a,T_H,Tmid,nWav,lambda,Q_a,Jrad,a_g,rh
         A(nEnthalpy,:) = 1.0d0
         B = 0.0d0
         B(nEnthalpy) = 1.0d0
-        call linsolve(nEnthalpy,A,B,P)
-        do j=nEnthalpy,1,-1
-           if (P(j) .ge. minP*maxval(P)) then
-              Tmax = Tgrid(j)
-              exit
+        call linsolve(nEnthalpy,A,B,P,info)
+        if (Tgrid(nEnthalpy) .ge. T_H(nTemp)) P(nEnthalpy) = 0.
+        if (info .gt. 0) then
+           Tmax = 0.9*Tmax
+        else
+           do j=nEnthalpy,1,-1
+              if (P(j) .ge. minP*maxval(P)) then
+                 Tmax = Tgrid(j)
+                 exit
+              end if
+           end do
+           if (Tmax .lt. 2.0d0*Tequib) then
+              Tmax = 2.0d0*Tequib
            end if
-        end do
-        if (Tmax .lt. 2.0d0*Tequib) then
-           Tmax = 2.0d0*Tequib
         end if
         if (abs(Tmax-Tgrid(nEnthalpy)) .lt. minTdiff*Tmax) exit
      end do

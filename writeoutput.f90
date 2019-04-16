@@ -51,17 +51,18 @@ subroutine writeemis(unitno,nWav,a_g,Jgrain)
 
 end subroutine writeemis
 
-subroutine writeparams(unitno,radtype,radc1,radc2,Nelec,N_H,Telec,T_atom,atomtype,nSpecies)
+subroutine writeparams(unitno,radtype,radc1,radc2,Nelec,N_H,Telec,T_atom,atomtype,nSpecies,T_cmb)
 
   implicit none
 
   integer,intent(in) :: unitno,nSpecies
   character(len=20),intent(in) :: radtype
-  double precision,intent(in) :: radc1,radc2,Nelec,N_H,Telec,T_atom
+  double precision,intent(in) :: radc1,radc2,Nelec,N_H,Telec,T_atom,T_cmb
   character(len=2),intent(out) :: atomtype
 
   write(unitno,"(I2,2X,'No. grain species')") nSpecies
   write(unitno,"(A20,2X,2(ES10.3,2X),'Radiation field')") radtype,radc1,radc2
+  write(unitno,"(ES10.3,2X,'CMB temperature (K)')") T_cmb
   write(unitno,"(ES10.3,2X,'Electron density (cm-3)')") Nelec
   write(unitno,"(ES10.3,2X,'Hydrogen density (cm-3)')") N_H
   write(unitno,"(ES10.3,2X,'Electron temperature (K)')") Telec

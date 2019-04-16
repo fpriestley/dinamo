@@ -1,17 +1,18 @@
-subroutine readinput(runlabel,nSpecies,Nelec,N_H,Telec,T_atom,atomtype,radtype,radc1,radc2)
+subroutine readinput(runlabel,nSpecies,Nelec,N_H,Telec,T_atom,atomtype,radtype,radc1,radc2,T_cmb)
 
   implicit none
 
   character(len=50),intent(out) :: runlabel
   character(len=20),intent(out) :: radtype
   integer,intent(out) :: nSpecies
-  double precision,intent(out) :: Nelec,N_H,Telec,T_atom,radc1,radc2
+  double precision,intent(out) :: Nelec,N_H,Telec,T_atom,radc1,radc2,T_cmb
   character(len=2),intent(out) :: atomtype
 
   open(unit=1,file='input/input.dat')
 
   read(1,*) runlabel
   read(1,*) radtype,radc1,radc2
+  read(1,*) T_cmb
   read(1,*) Nelec
   read(1,*) N_H
   read(1,*) Telec
@@ -33,7 +34,7 @@ subroutine readgrainfiles(nSpecies,gfile)
 
   open(unit=1,file='input/input.dat')
 
-  do i=1,8
+  do i=1,9
      read(1,*)
   end do
 

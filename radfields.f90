@@ -58,7 +58,7 @@ double precision function Jpl(lambda,C,a)
 
 end function Jpl
 
-! Fit to synchrotron spectrum - power law with exponential cutoff
+! Fit to synchrotron spectrum from Cas A - power law with exponential cutoff
 ! Jsync in erg cm-3 s-1 sr-1, lambda in um
 double precision function Jsync(lambda,C,E0)
   use constants_mod
@@ -76,21 +76,32 @@ double precision function Jsync(lambda,C,E0)
 
 end function Jsync
 
-! Fit to Crab Nebula synchrotron spectrum - power law with exponential cutoff
+! Double power law fit to Crab Nebula synchrotron spectrum
 ! Jcrab in erg cm-3 s-1 sr-1, lambda in um, d in pc
-double precision function Jcrab(lambda,d)
+double precision function Jcrab(lambda,d,av)
   use constants_mod
 
   implicit none
 
-  double precision,intent(in) :: lambda,d
-  double precision :: nu,lambdacm,nulnu
+  double precision,intent(in) :: lambda,d,av
+  double precision :: nu,lambdacm,nulnu,nu0,c,ex1,ex2,wavlim
 
   lambdacm = 1d-4*lambda
   nu = c_s/lambdacm ! frequency in Hz
+  nu0 = 6.2467e13 ! break frequency
+  c = 7.665e36 ! scaling factor
+  ex1 = 0.630 ! first power law exponent
+  ex2 = 0.0696 ! second power law exponent
+  wavlim = 0.0912 ! lyman limit in um
 
-  nulnu = 8.0d24 * nu**1.075 * exp(-(nu/2.4d5)**0.1) ! luminosity in erg s-1
+  if (nu .le. nu0) then
+     nulnu = c*(nu/nu0)**ex1
+  else
+     nulnu = c*(nu/nu0)**ex2
+  end if
   Jcrab = nulnu/fourpi/(d*pc)**2 ! flux at distance d pc in erg cm-2 s-1
   Jcrab = Jcrab/(pi*lambdacm) ! mean intensity in erg cm-3 s-1 sr-1
+
+  if ((av .le. 0) .and. (lambda .lt. wavlim)) Jcrab = 0.0
 
 end function Jcrab

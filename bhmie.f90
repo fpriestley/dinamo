@@ -20,7 +20,7 @@ subroutine BHmie (x,refrel,qext,qsca,ggsca)
         
     real(kind = 8), dimension(100) ::  amu, theta,pii,tau,pi0,pi1
         
-    double complex              :: d(100000),y,xi,xi0,xi1,an,bn,s1(200),s2(200),&
+    double complex              :: d(500000),y,xi,xi0,xi1,an,bn,s1(200),s2(200),&
         &an1,bn1
     real(kind = 8)                 ::  psi0,psi1,psi,dn,dx,xstop,ymod,dang,chi0,&
         &chi1,apsi0,apsi1,apsi,fn,chi,p,t

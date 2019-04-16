@@ -1,4 +1,4 @@
-! DINAMO v1.01
+! DINAMO v1.02
 program dinamo
   use constants_mod
   use particle_mod
@@ -20,7 +20,7 @@ program dinamo
   double precision,allocatable :: lambda(:),Jrad(:),Jgrain(:),Jtot(:)
   double precision :: JMat,Jbb,Jpl,Jsync,Jcrab
   character(len=20) :: radtype
-  double precision :: radc1,radc2
+  double precision :: radc1,radc2,T_cmb
   ! grain radiative properties
   integer :: nQsize
   double precision,allocatable :: Qdata(:,:),Qsize(:)
@@ -65,9 +65,10 @@ program dinamo
      radtype = 'mathis'
      radc1 = 1.0d0
      radc2 = 1.0d0
+     T_cmb = 2.73d0
      Tsub = 2.5d3
   else
-     call readinput(runlabel,nSpecies,Nelec,N_H,Telec,T_atom,atomtype,radtype,radc1,radc2)
+     call readinput(runlabel,nSpecies,Nelec,N_H,Telec,T_atom,atomtype,radtype,radc1,radc2,T_cmb)
      allocate(gfile(nSpecies))
      allocate(graintype(nSpecies))
      call readgrainfiles(nSpecies,gfile)
@@ -77,7 +78,7 @@ program dinamo
   if (lgHyd) call createparticle(nEner,T_atom,E_H,P_H)
 
   call openoutput(nSpecies,runlabel)
-  call writeparams(12,radtype,radc1,radc2,Nelec,N_H,Telec,T_atom,atomtype,nSpecies)
+  call writeparams(12,radtype,radc1,radc2,Nelec,N_H,Telec,T_atom,atomtype,nSpecies,T_cmb)
 
   do s=1,nSpecies
 
@@ -120,11 +121,15 @@ program dinamo
         end do
      else if (radtype .eq. 'crab') then
         do i=1,nWav
-           Jrad(i) = Jcrab(lambda(i),radc1)
+           Jrad(i) = Jcrab(lambda(i),radc1,radc2)
         end do
      else
         Jrad = 0.0d0
      end if
+
+     do i=1,nWav
+        Jrad(i) = Jrad(i) + Jbb(lambda(i),T_cmb)
+     end do
 
      if (s .eq. 1) then
         allocate(Jtot(nWav))
@@ -171,9 +176,9 @@ program dinamo
            call createH_a(nTemp,H_T,H_a,a_g(i),rho_g)
         else
            call calcmie(nWav,lambda,nrad,krad,a_g(i),Q_a)
-           call calcenthalpy(nTemp,T_H,H_a,a_g(i),rho_g,graintype(nSpecies))
+           call calcenthalpy(nTemp,T_H,H_a,a_g(i),rho_g,graintype(s))
         end if
-        call solveTdist(nEnthalpy,P,nTemp,H_a,T_H,Tmid,nWav,lambda,Q_a,Jrad,a_g(i),rho_g,graintype(nSpecies))
+        call solveTdist(nEnthalpy,P,nTemp,H_a,T_H,Tmid,nWav,lambda,Q_a,Jrad,a_g(i),rho_g,graintype(s))
         call writeTdist(10,nEnthalpy,a_g(i),Tmid,P)
         ! Calculate emission
         call grainemis(nEnthalpy,Tmid,P,a_g(i),N_a(i),nWav,lambda,Q_a,Jgrain)
@@ -185,9 +190,9 @@ program dinamo
 
      if (s .eq. nSpecies) then
         write(11,"('Wavelength / um')")
-        write(11,'(10000E10.3)') (lambda(j),j=1,nWav)
-        write(11,"('Total dust emission / erg s-1 cm-1 sr-1')")
-        write(11,'(10000E10.3)') (Jtot(j),j=1,nWav)
+        write(11,'(10000ES10.3)') (lambda(j),j=1,nWav)
+        write(11,"('Total dust emission / erg s-1 cm-3 sr-1 cm-1')")
+        write(11,'(10000ES10.3)') (Jtot(j),j=1,nWav)
         deallocate(Jtot)
      end if
 
@@ -208,6 +213,7 @@ program dinamo
      else
         deallocate(lambda)
         deallocate(Jrad)
+        deallocate(Jgrain)
         deallocate(nrad)
         deallocate(krad)
         deallocate(agrid)
