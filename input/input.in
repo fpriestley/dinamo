@@ -1,5 +1,6 @@
 example         ! Output filename
 mathis 1.0 1.0  ! Radiation field
+2.73            ! CMB temperature (K)
 100.            ! Electron density (cm-3)
 100.            ! Atom/ion density (cm-3)
 100.            ! Electron temperature (K)
