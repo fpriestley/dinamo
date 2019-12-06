@@ -1,4 +1,4 @@
-! DINAMO v1.02
+! DINAMO v1.03
 program dinamo
   use constants_mod
   use particle_mod
@@ -105,7 +105,7 @@ program dinamo
 
      if (radtype .eq. 'mathis') then
         do i=1,nWav
-           Jrad(i) = radc1*JMat(lambda(i))
+           Jrad(i) = radc1*JMat(lambda(i),radc2)
         end do
      else if (radtype .eq. 'blackbody') then
         do i=1,nWav
