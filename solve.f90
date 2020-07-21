@@ -54,7 +54,7 @@ subroutine solveTdist(nEnthalpy,P,nTemp,H_a,T_H,Tmid,nWav,lambda,Q_a,Jrad,a_g,rh
               end if
            end do
            if (Tmax .lt. 2.0d0*Tequib) then
-              Tmax = 2.0d0*Tequib
+              Tmax = 2.0d0*Tmax
            end if
         end if
         if (abs(Tmax-Tgrid(nEnthalpy)) .lt. minTdiff*Tmax) exit

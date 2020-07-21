@@ -1,4 +1,4 @@
-! DINAMO v1.03
+! DINAMO v1.04
 program dinamo
   use constants_mod
   use particle_mod
