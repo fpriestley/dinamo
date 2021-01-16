@@ -7,7 +7,7 @@ subroutine readQparams(filename,nQsize,nWav)
   integer,intent(out) :: nQsize,nWav
   integer :: i
 
-  open(unit=1,file=filename)
+  open(unit=1,file=filename,status='old')
 
   do i=1,7
      read(1,*)
@@ -30,7 +30,7 @@ subroutine readQ(filename,nQsize,nWav,Q,Qsize,lambda,rho_g)
   double precision :: junk
   integer :: i,j,nskip
 
-  open(unit=1,file=filename)
+  open(unit=1,file=filename,status='old')
 
   do i=1,9
      read(1,*)
@@ -70,7 +70,7 @@ subroutine readnTemp(filename,nTemp)
   integer,intent(out) :: nTemp
   double precision :: skip
 
-  open(unit=1,file=filename)
+  open(unit=1,file=filename,status='old')
 
   read(1,*)
   read(1,*)
@@ -89,7 +89,7 @@ subroutine readHT(filename,nTemp,T_H,H_T)
   double precision,intent(out) :: T_H(nTemp),H_T(nTemp)
   integer :: i
 
-  open(unit=1,file=filename)
+  open(unit=1,file=filename,status='old')
 
   do i=1,3
      read(1,*)
@@ -111,7 +111,7 @@ subroutine readnSizes(filename,nSizes)
   integer,intent(out) :: nSizes
   integer :: ierr
 
-  open(unit=1,file=filename)
+  open(unit=1,file=filename,status='old')
 
   nSizes = 0
 
@@ -136,7 +136,7 @@ subroutine readSizes(filename,nSizes,a,f)
   double precision,intent(out) :: a(0:nSizes),f(0:nSizes)
   integer :: i
 
-  open(unit=1,file=filename)
+  open(unit=1,file=filename,status='old')
 
   do i=1,4
      read(1,*)

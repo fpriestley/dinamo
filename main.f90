@@ -1,4 +1,4 @@
-! DINAMO v1.04
+! DINAMO v1.05
 program dinamo
   use constants_mod
   use particle_mod
@@ -19,8 +19,10 @@ program dinamo
   integer :: nWav
   double precision,allocatable :: lambda(:),Jrad(:),Jgrain(:),Jtot(:)
   double precision :: JMat,Jbb,Jpl,Jsync,Jcrab
-  character(len=20) :: radtype
+  character(len=20) :: radtype,radfile
   double precision :: radc1,radc2,T_cmb
+  integer :: nfilewav
+  double precision,allocatable :: lambdafile(:),fluxfile(:)
   ! grain radiative properties
   integer :: nQsize
   double precision,allocatable :: Qdata(:,:),Qsize(:)
@@ -123,6 +125,19 @@ program dinamo
         do i=1,nWav
            Jrad(i) = Jcrab(lambda(i),radc1,radc2)
         end do
+     else if (radtype .eq. 'file') then
+        radfile = 'shockflux.dat'
+        call countlines('input/'//trim(radfile),nfilewav)
+        allocate(lambdafile(nfilewav),fluxfile(nfilewav))
+        open(unit=2,file='input/'//trim(radfile),status='old')
+        do i=1,nfilewav
+           read(2,*) lambdafile(i),fluxfile(i)
+        end do
+        do i=1,nwav
+           call interpolate(lambda(i),Jrad(i),lambdafile,fluxfile,nfilewav)
+        end do
+        deallocate(lambdafile,fluxfile)
+        Jrad = radc1*Jrad
      else
         Jrad = 0.0d0
      end if

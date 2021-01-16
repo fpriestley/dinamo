@@ -6,7 +6,7 @@ subroutine countlines(filename,n)
   integer,intent(out) :: n
   integer :: io
 
-  open(unit=99,file=filename)
+  open(unit=99,file=filename,status='old')
 
   n = 0
 

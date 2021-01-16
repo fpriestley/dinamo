@@ -8,7 +8,7 @@ subroutine readinput(runlabel,nSpecies,Nelec,N_H,Telec,T_atom,atomtype,radtype,r
   double precision,intent(out) :: Nelec,N_H,Telec,T_atom,radc1,radc2,T_cmb
   character(len=2),intent(out) :: atomtype
 
-  open(unit=1,file='input/input.dat')
+  open(unit=1,file='input/input.dat',status='old')
 
   read(1,*) runlabel
   read(1,*) radtype,radc1,radc2
@@ -32,7 +32,7 @@ subroutine readgrainfiles(nSpecies,gfile)
   character(len=100),intent(out) :: gfile(nSpecies)
   integer :: i
 
-  open(unit=1,file='input/input.dat')
+  open(unit=1,file='input/input.dat',status='old')
 
   do i=1,9
      read(1,*)
@@ -56,7 +56,7 @@ subroutine readprop(gfile,nkfile,rho,graintype,nSizes,amin,amax,nmrn,N_g,Tsub)
   double precision,intent(out) :: rho,amin,amax,N_g,nmrn,Tsub
   integer,intent(out) :: nSizes
 
-  open(unit=1,file='input/'//trim(gfile))
+  open(unit=1,file='input/'//trim(gfile),status='old')
 
   read(1,*) graintype
   read(1,*) rho
@@ -83,7 +83,7 @@ subroutine readnk(nkfile,nWav,lambda,nrad,krad)
 
   type = nkfile(len(trim(nkfile))-2:len(trim(nkfile)))
 
-  open(unit=1,file='input/'//trim(nkfile))
+  open(unit=1,file='input/'//trim(nkfile),status='old')
 
   if (type .eq. 'lnk') then
      do i=1,nWav
