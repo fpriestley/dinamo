@@ -1,6 +1,6 @@
 # DINAMO
 DINAMO (DINAMO Is Not A MOdified blackbody) is a dust heating and emission code for astrophysics, 
-described in Priestley, Barlow & De Looze (2019).
+described in [Priestley, Barlow & De Looze (2019)](https://ui.adsabs.harvard.edu/abs/2019MNRAS.485..440P%252F).
 Given dust optical properties, the local radiation field and the gas density and temperature, 
 DINAMO calculates the equilibrium temperature distribution for each grain size in a specified 
 size distribution, accounting for collisional heating by electrons and atoms/ions as well as 
