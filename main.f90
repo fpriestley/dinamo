@@ -1,4 +1,4 @@
-! DINAMO v1.06
+! DINAMO v1.07
 program dinamo
   use constants_mod
   use particle_mod
@@ -184,6 +184,7 @@ program dinamo
      write(11,'(I1,I3)') s,nSizes
 
      do i=1,nSizes
+        heatinfo = 0.0d0
         write(*,"('Size ',I3,' of ',I3)") i,nSizes
         ! Solve temperature distribution
         if (lgBenchmark) then
@@ -201,6 +202,8 @@ program dinamo
         do j=1,nWav
            Jtot(j) = Jtot(j) + Jgrain(j)
         end do
+        ! Write heating rate information
+        call writeheatinfo(13,a_g(i))
      end do
 
      if (s .eq. nSpecies) then

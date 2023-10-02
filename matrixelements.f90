@@ -83,6 +83,7 @@ end subroutine creatematrix
 ! lambda, a in um, cooling rate in erg s-1
 double precision function coolingrate(T,nWav,lambda,Q,a)
   use constants_mod
+  use particle_mod
 
   implicit none
 
@@ -99,6 +100,8 @@ double precision function coolingrate(T,nWav,lambda,Q,a)
 
   coolingrate = fourpisq*(a*1d-4)**2 * integrate(integrand,lambda,nWav,lambda(1),lambda(nWav))
 
+  heatinfo(5) = coolingrate
+
 end function coolingrate
 
 ! Heating rate used to determine equilibrium temperature
@@ -113,6 +116,7 @@ double precision function heatingrate(nWav,lambda,Q,J,a)
   double precision,intent(in) :: a,lambda(nWav),Q(nWav),J(nWav)
   double precision :: integrand(nWav),eintegrand(nEner)
   double precision :: integrate,v_E,v_p
+  double precision :: elecheat,ionheat
   integer :: i
 
   do i=1,nWav
@@ -121,12 +125,16 @@ double precision function heatingrate(nWav,lambda,Q,J,a)
 
   heatingrate = fourpisq*(a*1d-4)**2 * integrate(integrand,lambda,nWav,lambda(1),lambda(nWav))
 
+  heatinfo(1) = heatingrate
+
   ! electron collisional heating contribution
   if (lgElec) then
      do i=1,nEner
         eintegrand(i) = EzetaE(i)*Pelec(i)*v_E(Eelec(i))
      end do
-     heatingrate = heatingrate + pi*(a*1d-4)**2 * Nelec * integrate(eintegrand,Eelec,nEner,Eelec(1),Eelec(nEner))
+     elecheat = pi*(a*1d-4)**2 * Nelec * integrate(eintegrand,Eelec,nEner,Eelec(1),Eelec(nEner))
+     heatingrate = heatingrate + elecheat
+     heatinfo(2) = elecheat
   end if
 
   ! hydrogen collisional heating contribution
@@ -134,8 +142,12 @@ double precision function heatingrate(nWav,lambda,Q,J,a)
      do i=1,nEner
         eintegrand(i) = EzetaE_H(i)*P_H(i)*v_p(E_H(i),atomtype)
      end do
-     heatingrate = heatingrate + pi*(a*1d-4)**2 * N_H * integrate(eintegrand,E_H,nEner,E_H(1),E_H(nEner))
+     ionheat = pi*(a*1d-4)**2 * N_H * integrate(eintegrand,E_H,nEner,E_H(1),E_H(nEner))
+     heatingrate = heatingrate + ionheat
+     heatinfo(3) = ionheat
   end if
+
+  heatinfo(4) = heatingrate
 
 end function heatingrate
 

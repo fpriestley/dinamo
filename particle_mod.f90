@@ -9,5 +9,6 @@ module particle_mod
   character(len=2) :: atomtype
   double precision :: Eelec(nEner),Pelec(nEner),EzetaE(nEner)
   double precision :: E_H(nEner),P_H(nEner),EzetaE_H(nEner)
+  double precision :: heatinfo(5)
 
 end module particle_mod

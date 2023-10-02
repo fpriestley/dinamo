@@ -8,9 +8,11 @@ subroutine openoutput(nSpecies,label)
   open(unit=10,file='output/'//trim(label)//'.Tdist.out',status='replace')
   open(unit=11,file='output/'//trim(label)//'.emis.out',status='replace')
   open(unit=12,file='output/'//trim(label)//'.param.out',status='replace')
+  open(unit=13,file='output/'//trim(label)//'.heat.out',status='replace')
 
   write(10,'(I1)') nSpecies
   write(11,'(I1)') nSpecies
+  write(13,'(I1)') nSpecies
 
 end subroutine openoutput
 
@@ -21,6 +23,7 @@ subroutine closeoutput()
   close(unit=10)
   close(unit=11)
   close(unit=12)
+  close(unit=13)
 
 end subroutine closeoutput
 
@@ -90,3 +93,17 @@ subroutine writegrainparams(unitno,nkfile,rho,graintype,nSizes,amin,amax,nmrn,N_
   write(unitno,"(ES10.3,2X,'Grain sublimation temperature (K)')") Tsub
 
 end subroutine writegrainparams
+
+subroutine writeheatinfo(unitno,a_g)
+  use particle_mod
+
+  implicit none
+
+  integer,intent(in) :: unitno
+  double precision,intent(in) :: a_g
+  integer :: i
+
+  write(unitno,'(ES10.3)') a_g
+  write(unitno,'(5ES10.3)') (heatinfo(i),i=1,5)
+
+end subroutine writeheatinfo
